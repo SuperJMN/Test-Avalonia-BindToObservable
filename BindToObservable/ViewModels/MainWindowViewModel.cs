@@ -3,12 +3,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using ReactiveUI;
 
 namespace BindToObservable.ViewModels;
 
-public class MainWindowViewModel : ReactiveObject
+
+public partial class MainWindowViewModel : ObservableObject
 {
     private readonly ReadOnlyObservableCollection<MyViewModel> myCollection;
 
@@ -25,17 +27,17 @@ public class MainWindowViewModel : ReactiveObject
             .Bind(out myCollection)
             .Subscribe();
 
-        IsSomethingSelected = changes
-            .AutoRefresh(x => x.IsSelected)
-            .ToCollection()
-            .Select(x => x.Any(model => model.IsSelected));
-
-        IsSomethingSelected.Subscribe(v => Debug.WriteLine($"Something selected: {v}"));
+        changes.WhenPropertyChanged(x => x.IsSelected, false)
+            .DistinctUntilChanged()
+            .Subscribe(_ => IsSomethingSelected = MyCollection.Any(x => x.IsSelected));
 
         changes.Connect();
     }
 
-    public IObservable<bool> IsSomethingSelected { get; }
+
+    [ObservableProperty]
+    bool _IsSomethingSelected;
+
 
     public ReadOnlyObservableCollection<MyViewModel> MyCollection => myCollection;
 }
