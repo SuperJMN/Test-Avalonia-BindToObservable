@@ -13,7 +13,7 @@
 	</Design.DataContext>
 
 	<DockPanel>
-		<CheckBox DockPanel.Dock="Top" Content="Has Selection?" IsEnabled="False" IsChecked="{Binding IsSomethingSelected^}" />
+		<CheckBox DockPanel.Dock="Top" Content="Has Selection?" IsEnabled="False" IsChecked="{Binding IsSomethingSelected, Mode=OneWay}" />
         <ListBox Items="{Binding MyCollection}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
