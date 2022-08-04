@@ -14,11 +14,12 @@ public class MainWindowViewModel : ReactiveObject
 
     public MainWindowViewModel()
     {
-        var changes = Observable.Range(1, 4)
+        var changes = Observable.Defer(() => Observable.Range(1, 4))
             .Select(i => new MyViewModel(i))
             .ToObservableChangeSet()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Publish();
+            .Replay()
+            .RefCount();
 
         changes
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -29,10 +30,6 @@ public class MainWindowViewModel : ReactiveObject
             .AutoRefresh(x => x.IsSelected)
             .ToCollection()
             .Select(x => x.Any(model => model.IsSelected));
-
-        IsSomethingSelected.Subscribe(v => Debug.WriteLine($"Something selected: {v}"));
-
-        changes.Connect();
     }
 
     public IObservable<bool> IsSomethingSelected { get; }
