@@ -10,7 +10,7 @@ using ReactiveUI;
 namespace BindToObservable.ViewModels;
 
 
-public partial class MainWindowViewModel : ObservableObject
+public class MainWindowViewModel : ObservableObject
 {
     private readonly ReadOnlyObservableCollection<MyViewModel> myCollection;
 
@@ -35,8 +35,13 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
 
-    [ObservableProperty]
     bool _IsSomethingSelected;
+
+    public bool IsSomethingSelected
+    {
+        get => _IsSomethingSelected;
+        private set => SetProperty(ref _IsSomethingSelected, value);
+    }
 
 
     public ReadOnlyObservableCollection<MyViewModel> MyCollection => myCollection;
